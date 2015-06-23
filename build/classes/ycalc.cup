@@ -83,7 +83,13 @@ non terminal Integer    expr, factor, term;
    term      ::= LPAREN expr:e RPAREN {: RESULT = e; :}
                  | NUMBER:n {: RESULT = n; :}
                  | ID:i {:
-                       if(parser.variables.containsKey(i))
+            if(parser.variables.containsKey(i))
+                          RESULT = parser.variables.get(i);
+                       else
+                       {
+                          System.out.println("Variable "+i+" no existe!!!" );
+                          RESULT = 0;
+                       }           if(parser.variables.containsKey(i))
                           RESULT = parser.variables.get(i);
                        else
                        {

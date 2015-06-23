@@ -48,8 +48,8 @@ public class Main {
          
       }
 
-      //System.out.print(code);
-      System.out.print(asm_gen.generator(code));
+      System.out.print(code);
+      //System.out.print(asm_gen.generator(code));
       
     } catch (Exception e) {
       /* do cleanup here -- possibly rethrow e */

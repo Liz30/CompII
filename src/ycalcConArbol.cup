@@ -2,10 +2,12 @@ import java_cup.runtime.*;
 import java.util.*;
 import treenodes.expresion.*;
 import treenodes.statement.*;
+import java.util.Hashtable;
+
 
 parser code {:
-    Hashtable<String,Integer > variables = new Hashtable<String, Integer>();
-
+    Hashtable<String,Integer > Posicion = new Hashtable<String, Integer>(); 
+        
     public void report_error(String message, Object info) {
      
         StringBuilder m = new StringBuilder("Error");
@@ -47,12 +49,25 @@ non terminal IdNode   id;
 non terminal Accesor accesor;   
    
    expr_list ::= expr_list:l expr_part:e
-                 {: l.add(e);
+                 {:  
+                     if(parser.Posicion.containsKey("x")) {}
+                     else
+                     {
+                        parser.Posicion.put("x",0);
+                        parser.Posicion.put("y",0);
+                     }
+                     l.add(e);
                      RESULT = l;
                   :}
                  |
                  expr_part:e
-                 {: List<StatementNode> list = new ArrayList<StatementNode>();
+                 {: if(!parser.Posicion.containsKey("x")){}
+                    else
+                    {
+                        parser.Posicion.put("x",0);
+                        parser.Posicion.put("y",0);
+                    }
+                    List<StatementNode> list = new ArrayList<StatementNode>();
                     list.add(e);
                     RESULT= list;
                   :};
@@ -60,10 +75,12 @@ non terminal Accesor accesor;
    expr_list_optional ::= expr_list:l {:RESULT=l;:}
                          | {:RESULT=new ArrayList<StatementNode>();:};
    
-   expr_part ::= id:i  ASSIGN expr:e SEMI {: RESULT = new AssignmentNode(i,e); :}                
+   expr_part ::= id:i  ASSIGN expr:e SEMI {: RESULT = new AssignmentNode(i,e); :}                                             
                 |FOR id:i  ASSIGFOR expr:initialVal COLON expr:finalVal DO expr_list_optional:code END {: RESULT = new ForNode(i,initialVal,finalVal,code );  :}
-                |SET_CURSOR LPAREN expr:x COMA expr:y RPAREN SEMI {: RESULT = new SetCursorNode(x,y);  :}
-                |MOVE_DOWN LPAREN RPAREN SEMI {: RESULT = new MoveDownNode(); :}
+                |SET_CURSOR LPAREN expr:x COMA expr:y RPAREN SEMI {: parser.Posicion.put("x",4);
+                                                                     parser.Posicion.put("y",3);
+                                                                     RESULT = new SetCursorNode(x,y);  :}
+                |MOVE_DOWN LPAREN RPAREN SEMI {: RESULT = new MoveDownNode(parser.Posicion.get("x"),parser.Posicion.get("y")); :}
                 |MOVE_UP LPAREN RPAREN SEMI {: RESULT = new MoveUpNode(); :}
                 |MOVE_LEFT LPAREN RPAREN SEMI {: RESULT = new MoveLeftNode(); :}
                 |MOVE_RIGHT LPAREN RPAREN SEMI {: RESULT = new MoveRightNode(); :}

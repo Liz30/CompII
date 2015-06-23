@@ -1,5 +1,1 @@
-for x <- 1:5 do
-      move_down();
-end
-
-set_cursor(6,5);
+set_color(100);

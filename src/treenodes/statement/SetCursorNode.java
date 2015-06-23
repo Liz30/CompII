@@ -37,7 +37,7 @@ public class SetCursorNode extends StatementNode {
     public String generateCode() {                
         ExpresionCode x = xvalue.generateCode();
         ExpresionCode y = yvalue.generateCode();
-        ASMGenerator asm=new ASMGenerator();
+        //ASMGenerator asm=new ASMGenerator();
         return  "\n;Set_Cursor("+x.getResult()+","+y.getResult()+")\n"+
                 "       push word "+y.getResult()+"\n"+
                 "       push word "+x.getResult()+"\n"+

@@ -7,6 +7,7 @@ import java_cup.runtime.*;
 import java.util.*;
 import treenodes.expresion.*;
 import treenodes.statement.*;
+import java.util.Hashtable;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20150326 (SVN rev 63) generated parser.
@@ -196,8 +197,8 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
-    Hashtable<String,Integer > variables = new Hashtable<String, Integer>();
-
+    Hashtable<String,Integer > Posicion = new Hashtable<String, Integer>(); 
+        
     public void report_error(String message, Object info) {
      
         StringBuilder m = new StringBuilder("Error");
@@ -257,7 +258,14 @@ class CUP$parser$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		StatementNode e = (StatementNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 l.add(e);
+		  
+                     if(parser.Posicion.containsKey("x")) {}
+                     else
+                     {
+                        parser.Posicion.put("x",0);
+                        parser.Posicion.put("y",0);
+                     }
+                     l.add(e);
                      RESULT = l;
                   
               CUP$parser$result = parser.getSymbolFactory().newSymbol("expr_list",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -285,7 +293,13 @@ class CUP$parser$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		StatementNode e = (StatementNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 List<StatementNode> list = new ArrayList<StatementNode>();
+		 if(!parser.Posicion.containsKey("x")){}
+                    else
+                    {
+                        parser.Posicion.put("x",0);
+                        parser.Posicion.put("y",0);
+                    }
+                    List<StatementNode> list = new ArrayList<StatementNode>();
                     list.add(e);
                     RESULT= list;
                   
@@ -360,7 +374,9 @@ class CUP$parser$actions {
 		int yleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int yright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		ExpresionNode y = (ExpresionNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		 RESULT = new SetCursorNode(x,y);  
+		 parser.Posicion.put("x",4);
+                                                                     parser.Posicion.put("y",3);
+                                                                     RESULT = new SetCursorNode(x,y);  
               CUP$parser$result = parser.getSymbolFactory().newSymbol("expr_part",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -369,7 +385,7 @@ class CUP$parser$actions {
           case 8: // expr_part ::= MOVE_DOWN LPAREN RPAREN SEMI 
             {
               StatementNode RESULT =null;
-		 RESULT = new MoveDownNode(); 
+		 RESULT = new MoveDownNode(parser.Posicion.get("x"),parser.Posicion.get("y")); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("expr_part",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
