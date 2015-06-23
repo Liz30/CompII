@@ -54,7 +54,7 @@ public class ASMGenerator {
                     "include 'win32a.inc' \n\n"+
                     "section '.data' data readable writeable \n\n"+
                     " pauseCmd db  'p','a','u','s','e',0 \n"+
-                    " msg db 'hola',10,13,0\n"+
+                    " msg db '*',10,13,0\n"+
                     " pos db 0,0,0,0 \n"+
                     " h dd -11 \n"+
                     " handle dd 0 \n"; 

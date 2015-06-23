@@ -7,21 +7,19 @@ import treenodes.expresion.NumberNode;
 
 public class MoveDownNode extends StatementNode {
 
-    Integer fila;
-    Integer columna;
+    ExpresionNode fila;
+    ExpresionNode columna;
     
-    public MoveDownNode(Integer fila, Integer columna) {
+    public MoveDownNode(ExpresionNode fila, ExpresionNode columna) {
         this.fila = fila;
         this.columna = columna;
     }
 
     @Override
     public String generateCode() { 
-        //obtener las posiciones actuales del cursor
-        //x+=1;
-        //codigo de set_cursor
-        ExpresionCode f=new NumberNode(fila).generateCode();
-        ExpresionCode c=new NumberNode(columna).generateCode();
+        ExpresionCode f=fila.generateCode();
+        ExpresionCode c=columna.generateCode();
+        
         
         return  "\n;MoveDown\n"+
                 "       push word "+c.getResult()+"\n"+

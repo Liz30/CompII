@@ -197,7 +197,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
-    Hashtable<String,Integer > Posicion = new Hashtable<String, Integer>(); 
+    Hashtable<String,ExpresionNode> Posicion = new Hashtable<String, ExpresionNode>(); 
         
     public void report_error(String message, Object info) {
      
@@ -262,8 +262,8 @@ class CUP$parser$actions {
                      if(parser.Posicion.containsKey("x")) {}
                      else
                      {
-                        parser.Posicion.put("x",0);
-                        parser.Posicion.put("y",0);
+                        parser.Posicion.put("x",new NumberNode(0));
+                        parser.Posicion.put("y",new NumberNode(0));
                      }
                      l.add(e);
                      RESULT = l;
@@ -296,8 +296,8 @@ class CUP$parser$actions {
 		 if(!parser.Posicion.containsKey("x")){}
                     else
                     {
-                        parser.Posicion.put("x",0);
-                        parser.Posicion.put("y",0);
+                        parser.Posicion.put("x", new NumberNode(0));
+                        parser.Posicion.put("y", new NumberNode(0));
                     }
                     List<StatementNode> list = new ArrayList<StatementNode>();
                     list.add(e);
@@ -374,8 +374,8 @@ class CUP$parser$actions {
 		int yleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int yright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		ExpresionNode y = (ExpresionNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		 parser.Posicion.put("x",4);
-                                                                     parser.Posicion.put("y",3);
+		 parser.Posicion.put("x",x);
+                                                                     parser.Posicion.put("y",y);
                                                                      RESULT = new SetCursorNode(x,y);  
               CUP$parser$result = parser.getSymbolFactory().newSymbol("expr_part",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

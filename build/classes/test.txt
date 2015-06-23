@@ -1,1 +1,2 @@
-set_color(100);
+move_down();
+set_color(144);
