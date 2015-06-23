@@ -1,0 +1,106 @@
+import java_cup.runtime.*;
+import java.util.*;
+import treenodes.expresion.*;
+import treenodes.statement.*;
+
+parser code {:
+    Hashtable<String,Integer > variables = new Hashtable<String, Integer>();
+
+    public void report_error(String message, Object info) {
+     
+        StringBuilder m = new StringBuilder("Error");
+   
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+   
+            if (s.left >= 0) {                
+                m.append(" in line "+(s.left+1));   
+                if (s.right >= 0)                    
+                    m.append(", column "+(s.right+1));
+            }
+        }
+   
+        m.append(" : "+message);
+   
+        System.err.println(m);
+    }
+   
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+        System.exit(1);
+    }
+:};
+   
+
+   
+terminal           SEMI, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN, COMA, COLON;
+terminal           ASSIGN,PRINT, FOR,TO,DO,END,LBRACK,RBRACK, ASSIGFOR;
+terminal           SET_CURSOR, MOVE_DOWN, MOVE_UP, MOVE_LEFT, MOVE_RIGHT;
+terminal           SET_COLOR;
+terminal Integer   NUMBER;
+terminal String    ID;
+   
+non terminal StatementNode     expr_part;
+non terminal List<StatementNode> expr_list,expr_list_optional;
+non terminal ExpresionNode    expr, factor, term;
+non terminal IdNode   id;
+non terminal Accesor accesor;   
+   
+   expr_list ::= expr_list:l expr_part:e
+                 {: l.add(e);
+                     RESULT = l;
+                  :}
+                 |
+                 expr_part:e
+                 {: List<StatementNode> list = new ArrayList<StatementNode>();
+                    list.add(e);
+                    RESULT= list;
+                  :};
+
+   expr_list_optional ::= expr_list:l {:RESULT=l;:}
+                         | {:RESULT=new ArrayList<StatementNode>();:};
+   
+   expr_part ::= id:i  ASSIGN expr:e SEMI {: RESULT = new AssignmentNode(i,e); :}                
+                |FOR id:i  ASSIGFOR expr:initialVal COLON expr:finalVal DO expr_list_optional:code END {: RESULT = new ForNode(i,initialVal,finalVal,code );  :}
+                |SET_CURSOR LPAREN expr:x COMA expr:y RPAREN SEMI {: RESULT = new SetCursorNode(x,y);  :}
+                |MOVE_DOWN LPAREN RPAREN SEMI {: RESULT = new MoveDownNode(); :}
+                |MOVE_UP LPAREN RPAREN SEMI {: RESULT = new MoveUpNode(); :}
+                |MOVE_LEFT LPAREN RPAREN SEMI {: RESULT = new MoveLeftNode(); :}
+                |MOVE_RIGHT LPAREN RPAREN SEMI {: RESULT = new MoveRightNode(); :}
+                |SET_COLOR LPAREN expr:e RPAREN SEMI {: RESULT = new SetColorNode(e); :}                
+                ;
+   
+   
+   expr      ::= expr:e PLUS factor:f
+                 {: RESULT = new  SumOperatorNode(e,f); :}
+                 |
+                 expr:e MINUS factor:f
+                 {: RESULT = new SubstractOperatorNode(e,f); :}
+                 |
+                 factor:f
+                 {: RESULT = f; :}
+                 ;
+   
+   
+   factor    ::=  factor:f TIMES term:t
+                 {: RESULT = new MultiplyOperatorNode(f,t); :}
+                 |
+                 factor:f DIVIDE term:t
+                 {: RESULT =  new DivideOperatorNode(f,t); :}
+                 |
+                 term:t
+                 {: RESULT = t; :}
+                 ;
+
+
+   term      ::= LPAREN expr:e RPAREN {: RESULT = e; :}
+                 | NUMBER:n {: RESULT = new NumberNode(n); :}
+                 | id:i  {:
+                      RESULT = i;
+                   :}
+                 ;
+
+  accesor   ::= LBRACK expr:e RBRACK {: RESULT= new IndexAccesor(e) ; :}
+               | {: RESULT = null; :} ;
+
+  id ::= ID:i accesor:a {: RESULT = new IdNode(i,a); :};
